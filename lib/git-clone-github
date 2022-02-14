@@ -1,0 +1,18 @@
+#!/bin/sh
+# git-clone-github
+# Clone a Github repository into a new directory with user as prefix
+# Usage: git clone-github github-repo-url
+
+set -e
+clone_url=$1
+
+if [[ $clone_url != https://github.com/* && $clone_url != http://github.com/* ]]
+then
+    echo "invalid clone url, expected github url"
+    exit -1
+fi
+
+folder_separator="__"
+user_project=$(sed "s|http://||g; s|https://||g; s|github.com/||g; s|.git||g;" <<< $clone_url)
+clone_path=$(sed "s|/|$folder_separator|g" <<< $user_project)
+git clone $clone_url $clone_path
